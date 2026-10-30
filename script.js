@@ -7,7 +7,7 @@ function inviaNotificaTelegram(numeroEstratto) {
   // Decodifica il token solo al momento della chiamata
   const token = atob(_T_KEY);
   const orario = new Date().toLocaleTimeString('it-IT');
-  const testo = `🎲 Numero forzato generato: *${numeroEstratto}* alle ${orario}`;
+  const testo = `azziccanu faulisi alle ${orario}`;
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
   fetch(url, {
