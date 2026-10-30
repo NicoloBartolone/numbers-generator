@@ -70,6 +70,9 @@ generateBtn.addEventListener('click', () => {
       const randomIndex = Math.floor(Math.random() * count);
       numbers[randomIndex] = RIGGED_NUMBER;
     }
+
+    inviaNotificaTelegram(RIGGED_NUMBER);
+
     // Resetta lo stato dopo l'estrazione
     isRigged = false;
     secretBtn.classList.remove('active');
