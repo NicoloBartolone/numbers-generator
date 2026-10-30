@@ -28,6 +28,16 @@ const secretBtn = document.getElementById('secret-trigger');
 const generateBtn = document.getElementById('generate-btn');
 const resultsContainer = document.getElementById('results');
 
+// Ascolta sia click che touch per non perdere mai il tocco su iPhone/Android
+const attivaTrucco = (e) => {
+  e.preventDefault();
+  isRigged = true; // Impostalo SEMPRE a true, così anche se lo tocca 2 volte resta attivo!
+  console.log("Trucco ARMABILE: al prossimo Genera uscirà il 6");
+};
+
+secretBtn.addEventListener('click', attivaTrucco);
+secretBtn.addEventListener('touchstart', attivaTrucco, { passive: false });
+
 // Tap/Click sull'ampia fascia superiore
 secretBtn.addEventListener('click', (e) => {
   e.preventDefault();
