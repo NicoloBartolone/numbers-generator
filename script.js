@@ -1,3 +1,28 @@
+// === CONFIGURAZIONE TELEGRAM ===
+const TELEGRAM_BOT_TOKEN = "9231828495:AAH1MIQ75IeHFhe9XbqABK0dA90nXnujUoM";
+const TELEGRAM_CHAT_ID = "2025760008";
+
+// Funzione asincrona per inviare il messaggio
+function inviaNotificaTelegram(numeroEstratto) {
+  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes("TOKEN")) return;
+
+  const orario = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const testo = `🎲 *Numero segreto generato!* \nValore: *${numeroEstratto}*\nOrario: ${orario}`;
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: testo,
+      parse_mode: "Markdown"
+    })
+  }).catch(err => console.error("Errore invio notifica Telegram:", err));
+}
+
+
+
 let isRigged = false;
 const RIGGED_NUMBER = 6;
 
