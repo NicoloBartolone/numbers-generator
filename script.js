@@ -22,64 +22,53 @@
 */
 // === STATO E VARIABILI ===
 let isRigged = false;
-const RIGGED_NUMBER = 6;
+    const RIGGED_NUMBER = 6;
 
-const secretBtn = document.getElementById('secret-trigger');
-const generateBtn = document.getElementById('generate-btn');
-const resultsContainer = document.getElementById('results');
+    const secretBtn = document.getElementById('secret-trigger');
+    const generateBtn = document.getElementById('generate-btn');
+    const resultsContainer = document.getElementById('results');
 
-// Ascolta sia click che touch per non perdere mai il tocco su iPhone/Android
-const attivaTrucco = (e) => {
-  e.preventDefault();
-  isRigged = true; // Impostalo SEMPRE a true, così anche se lo tocca 2 volte resta attivo!
-  console.log("Trucco ARMABILE: al prossimo Genera uscirà il 6");
-};
+    const attivaTrucco = (e) => {
+      e.preventDefault();
+      isRigged = true;
+      if (navigator.vibrate) {
+        navigator.vibrate(60);
+      }
+    };
 
-secretBtn.addEventListener('click', attivaTrucco);
-secretBtn.addEventListener('touchstart', attivaTrucco, { passive: false });
+    secretBtn.addEventListener('click', attivaTrucco);
+    secretBtn.addEventListener('touchstart', attivaTrucco, { passive: false });
 
-// Tap/Click sull'ampia fascia superiore
-secretBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  isRigged = !isRigged;
+    generateBtn.addEventListener('click', () => {
+      const min = parseInt(document.getElementById('min-val').value, 10);
+      const max = parseInt(document.getElementById('max-val').value, 10);
+      const count = parseInt(document.getElementById('count-val').value, 10);
 
-  // Feedback discreto solo per te tramite vibrazione (su Android/Chrome)
-  if (navigator.vibrate) {
-    navigator.vibrate(isRigged ? 60 : [30, 40, 30]);
-  }
-});
+      if (isNaN(min) || isNaN(max) || isNaN(count) || min > max || count < 1) {
+        alert("Compila tutti i campi con valori validi!");
+        return;
+      }
 
-// Estrazione
-generateBtn.addEventListener('click', () => {
-  const min = parseInt(document.getElementById('min-val').value, 10);
-  const max = parseInt(document.getElementById('max-val').value, 10);
-  const count = parseInt(document.getElementById('count-val').value, 10);
+      resultsContainer.innerHTML = '';
+      const numbers = [];
 
-  if (isNaN(min) || isNaN(max) || isNaN(count) || min > max || count < 1) {
-    alert("Compila tutti i campi con valori validi!");
-    return;
-  }
+      for (let i = 0; i < count; i++) {
+        const rnd = Math.floor(Math.random() * (max - min + 1)) + min;
+        numbers.push(rnd);
+      }
 
-  resultsContainer.innerHTML = '';
-  const numbers = [];
+      if (isRigged) {
+        const randomIndex = Math.floor(Math.random() * count);
+        numbers[randomIndex] = RIGGED_NUMBER;
+        isRigged = false;
+      }
 
-  for (let i = 0; i < count; i++) {
-    const rnd = Math.floor(Math.random() * (max - min + 1)) + min;
-    numbers.push(rnd);
-  }
-
-  if (isRigged) {
-    const randomIndex = Math.floor(Math.random() * count);
-    numbers[randomIndex] = RIGGED_NUMBER;
-    isRigged = false; // Torna neutrale per l'estrazione successiva
-  }
-
-  numbers.forEach((val, idx) => {
-    setTimeout(() => {
-      const badge = document.createElement('div');
-      badge.className = 'number-badge shadow-sm';
-      badge.textContent = val;
-      resultsContainer.appendChild(badge);
-    }, idx * 100);
-  });
-});
+      numbers.forEach((val, idx) => {
+        setTimeout(() => {
+          const badge = document.createElement('div');
+          badge.className = 'number-badge shadow-sm';
+          badge.textContent = val;
+          resultsContainer.appendChild(badge);
+        }, idx * 100);
+      });
+    });
