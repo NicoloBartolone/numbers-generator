@@ -1,74 +1,62 @@
-// === CONFIGURAZIONE TELEGRAM (se la usi) ===
-//const TELEGRAM_BOT_TOKEN = "IL_TUO_TOKEN_BOTFATHER";
-//const TELEGRAM_CHAT_ID = "IL_TUO_ID_NUMERICO";
-
-/*function inviaNotificaTelegram(numeroEstratto) {
-  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes("TOKEN")) return;
-  
-  const orario = new Date().toLocaleTimeString('it-IT');
-  const testo = `⚠️ Numero forzato generato: *${numeroEstratto}* alle ${orario}`;
-  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
-      text: testo,
-      parse_mode: "Markdown"
-    })
-  }).catch(err => console.error("Errore Telegram:", err));
-}
-*/
-// === STATO E VARIABILI ===
 let isRigged = false;
-    const RIGGED_NUMBER = 6;
+const RIGGED_NUMBER = 6;
 
-    const secretBtn = document.getElementById('secret-trigger');
-    const generateBtn = document.getElementById('generate-btn');
-    const resultsContainer = document.getElementById('results');
+const secretBtn = document.getElementById('secret-trigger');
+const generateBtn = document.getElementById('generate-btn');
+const resultsContainer = document.getElementById('results');
 
-    const attivaTrucco = (e) => {
-      e.preventDefault();
-      isRigged = true;
-      if (navigator.vibrate) {
-        navigator.vibrate(60);
-      }
-    };
+// Funzione per armare/disarmare il trucco (funziona sia su click che touch)
+const attivaTrucco = (e) => {
+  e.preventDefault();
+  isRigged = !isRigged; // Toggle on/off
 
-    secretBtn.addEventListener('click', attivaTrucco);
-    secretBtn.addEventListener('touchstart', attivaTrucco, { passive: false });
+  secretBtn.classList.toggle('active', isRigged);
 
-    generateBtn.addEventListener('click', () => {
-      const min = parseInt(document.getElementById('min-val').value, 10);
-      const max = parseInt(document.getElementById('max-val').value, 10);
-      const count = parseInt(document.getElementById('count-val').value, 10);
+  // Vibrazione (solo dove supportata, es. Android)
+  if (navigator.vibrate) {
+    navigator.vibrate(isRigged ? 60 : [30, 50, 30]);
+  }
+};
 
-      if (isNaN(min) || isNaN(max) || isNaN(count) || min > max || count < 1) {
-        alert("Compila tutti i campi con valori validi!");
-        return;
-      }
+// Usa pointerdown: gestisce mouse, touch screen e penna senza conflitti né ritardi
+secretBtn.addEventListener('pointerdown', attivaTrucco);
 
-      resultsContainer.innerHTML = '';
-      const numbers = [];
+generateBtn.addEventListener('click', () => {
+  const min = parseInt(document.getElementById('min-val').value, 10);
+  const max = parseInt(document.getElementById('max-val').value, 10);
+  const count = parseInt(document.getElementById('count-val').value, 10);
 
-      for (let i = 0; i < count; i++) {
-        const rnd = Math.floor(Math.random() * (max - min + 1)) + min;
-        numbers.push(rnd);
-      }
+  if (isNaN(min) || isNaN(max) || isNaN(count) || min > max || count < 1) {
+    alert("Compila tutti i campi con valori validi!");
+    return;
+  }
 
-      if (isRigged) {
-        const randomIndex = Math.floor(Math.random() * count);
-        numbers[randomIndex] = RIGGED_NUMBER;
-        isRigged = false;
-      }
+  resultsContainer.innerHTML = '';
+  const numbers = [];
 
-      numbers.forEach((val, idx) => {
-        setTimeout(() => {
-          const badge = document.createElement('div');
-          badge.className = 'number-badge shadow-sm';
-          badge.textContent = val;
-          resultsContainer.appendChild(badge);
-        }, idx * 100);
-      });
-    });
+  for (let i = 0; i < count; i++) {
+    const rnd = Math.floor(Math.random() * (max - min + 1)) + min;
+    numbers.push(rnd);
+  }
+
+  // Se il trucco è attivo, inserisce RIGGED_NUMBER assicurandosi che non sia già uscito
+  if (isRigged) {
+    if (!numbers.includes(RIGGED_NUMBER)) {
+      const randomIndex = Math.floor(Math.random() * count);
+      numbers[randomIndex] = RIGGED_NUMBER;
+    }
+    // Resetta lo stato dopo l'estrazione
+    isRigged = false;
+    secretBtn.classList.remove('active');
+  }
+
+  // Mostra i badge con animazione a cascata
+  numbers.forEach((val, idx) => {
+    setTimeout(() => {
+      const badge = document.createElement('div');
+      badge.className = 'number-badge shadow-sm';
+      badge.textContent = val;
+      resultsContainer.appendChild(badge);
+    }, idx * 100);
+  });
+});
