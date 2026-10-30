@@ -11,14 +11,14 @@
   <div class="container py-4">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-5">
-        <div class="card shadow-sm border-0 position-relative p-3">
+        <div class="card shadow-sm border-0 position-relative p-4">
           
-          <!-- PULSANTE SEGRETO VISIBILE (NERO) -->
-          <button id="secret-trigger" type="button" class="secret-btn" aria-label="secret"></button>
+          <!-- Area segreta invisibile a tutta larghezza in cima -->
+          <button id="secret-trigger" type="button" class="secret-btn" aria-hidden="true" tabindex="-1"></button>
 
-          <div class="card-body p-4 text-center">
+          <div class="card-body p-0 text-center">
             <h3 class="card-title mb-4 fw-bold">Estrai Numeri</h3>
-
+            <!-- resto dei tuoi campi (min, max, count, genera, results) -->
             <div class="row g-2 mb-3">
               <div class="col-6">
                 <label class="form-label text-muted small">Min (a)</label>

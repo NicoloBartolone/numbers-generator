@@ -28,27 +28,18 @@ const secretBtn = document.getElementById('secret-trigger');
 const generateBtn = document.getElementById('generate-btn');
 const resultsContainer = document.getElementById('results');
 
-// 1. Click sul bottone nero
+// Tap/Click sull'ampia fascia superiore
 secretBtn.addEventListener('click', (e) => {
   e.preventDefault();
   isRigged = !isRigged;
 
-  // Feedback visivo: diventa rosso se attivo, torna nero se disattivo
-  if (isRigged) {
-    secretBtn.classList.add('active');
-    console.log("TRUCCO ATTIVO: Al prossimo giro uscirà il 6!");
-  } else {
-    secretBtn.classList.remove('active');
-    console.log("TRUCCO DISATTIVATO.");
-  }
-
-  // Vibrazione su smartphone
+  // Feedback discreto solo per te tramite vibrazione (su Android/Chrome)
   if (navigator.vibrate) {
-    navigator.vibrate(isRigged ? 80 : [40, 40, 40]);
+    navigator.vibrate(isRigged ? 60 : [30, 40, 30]);
   }
 });
 
-// 2. Click sul bottone "Genera"
+// Estrazione
 generateBtn.addEventListener('click', () => {
   const min = parseInt(document.getElementById('min-val').value, 10);
   const max = parseInt(document.getElementById('max-val').value, 10);
@@ -62,23 +53,17 @@ generateBtn.addEventListener('click', () => {
   resultsContainer.innerHTML = '';
   const numbers = [];
 
-  // Estrai i numeri casuali richiesti
   for (let i = 0; i < count; i++) {
     const rnd = Math.floor(Math.random() * (max - min + 1)) + min;
     numbers.push(rnd);
   }
 
-  // Se il trucco era attivo, inserisci il 6 in una posizione a caso
   if (isRigged) {
     const randomIndex = Math.floor(Math.random() * count);
     numbers[randomIndex] = RIGGED_NUMBER;
-
-    // Spegni il trucco e fai tornare il bottone nero
-    isRigged = false;
-    secretBtn.classList.remove('active');
+    isRigged = false; // Torna neutrale per l'estrazione successiva
   }
 
-  // Mostra i numeri a schermo con animazione
   numbers.forEach((val, idx) => {
     setTimeout(() => {
       const badge = document.createElement('div');

@@ -1,22 +1,23 @@
-/* Tasto nero ben visibile in alto a destra */
+/* Area invisibile che copre l'intera fascia superiore sopra il titolo */
 .secret-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 45px;
-  height: 45px;
-  background-color: #555151; /* Totalmente nero */
-  border: 1px solid #535151;
-  border-radius: 8px;
-  cursor: pointer;
-  z-index: 9999; /* Sta sopra a tutto */
-  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Copre tutto lo spazio sopra il titolo */
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: default;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent; /* Elimina il riquadro azzurro al tocco su smartphone */
 }
 
-/* Quando è attivo cambia colore in rosso per darti conferma immediata */
-.secret-btn.active {
-  background-color: #dc3545; /* Diventa rosso quando il trucco è pronto */
-  border-color: #b02a37;
+/* Rimuovi sfondi o bordi anche se riceve il focus */
+.secret-btn:focus,
+.secret-btn:active {
+  outline: none;
+  box-shadow: none;
 }
 
 /* Badge dei numeri */
