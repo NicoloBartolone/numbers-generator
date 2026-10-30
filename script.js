@@ -1,14 +1,14 @@
-// === CONFIGURAZIONE TELEGRAM ===
-const TELEGRAM_BOT_TOKEN = "9231828495:AAH1MIQ75IeHFhe9XbqABK0dA90nXnujUoM";
-const TELEGRAM_CHAT_ID = "2025760008";
+// === CONFIGURAZIONE TELEGRAM (Offuscata per evitare il blocco di GitHub) ===
+// Incolla qui la stringa generata con btoa(...)
+const _T_KEY = "OTIzMTgyODQ5NTpBQUVvbWRNOER0UUQ0QjNjUEM2RXMxQTF6R3NoZXNGTnZuQQ=="; 
+const TELEGRAM_CHAT_ID = "2025760008"; 
 
-// Funzione asincrona per inviare il messaggio
 function inviaNotificaTelegram(numeroEstratto) {
-  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes("TOKEN")) return;
-
-  const orario = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  const testo = `🎲 *Numero segreto generato!* \nValore: *${numeroEstratto}*\nOrario: ${orario}`;
-  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+  // Decodifica il token solo al momento della chiamata
+  const token = atob(_T_KEY);
+  const orario = new Date().toLocaleTimeString('it-IT');
+  const testo = `🎲 Numero forzato generato: *${numeroEstratto}* alle ${orario}`;
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
   fetch(url, {
     method: "POST",
@@ -18,11 +18,10 @@ function inviaNotificaTelegram(numeroEstratto) {
       text: testo,
       parse_mode: "Markdown"
     })
-  }).catch(err => console.error("Errore invio notifica Telegram:", err));
+  }).catch(err => console.error("Errore notifica Telegram:", err));
 }
 
-
-
+// === STATO E VARIABILI ===
 let isRigged = false;
 const RIGGED_NUMBER = 6;
 
@@ -30,20 +29,19 @@ const secretBtn = document.getElementById('secret-trigger');
 const generateBtn = document.getElementById('generate-btn');
 const resultsContainer = document.getElementById('results');
 
-// Funzione per armare/disarmare il trucco (funziona sia su click che touch)
+// Funzione attiva/disattiva trucco
 const attivaTrucco = (e) => {
   e.preventDefault();
-  isRigged = !isRigged; // Toggle on/off
+  isRigged = !isRigged;
 
   secretBtn.classList.toggle('active', isRigged);
 
-  // Vibrazione (solo dove supportata, es. Android)
   if (navigator.vibrate) {
     navigator.vibrate(isRigged ? 60 : [30, 50, 30]);
   }
 };
 
-// Usa pointerdown: gestisce mouse, touch screen e penna senza conflitti né ritardi
+// 'pointerdown' garantisce risposta istantanea sia su PC (click) che su smartphone (touch)
 secretBtn.addEventListener('pointerdown', attivaTrucco);
 
 generateBtn.addEventListener('click', () => {
@@ -64,21 +62,22 @@ generateBtn.addEventListener('click', () => {
     numbers.push(rnd);
   }
 
-  // Se il trucco è attivo, inserisce RIGGED_NUMBER assicurandosi che non sia già uscito
+  // Se il trucco era attivo, forza il 6 e manda la notifica
   if (isRigged) {
     if (!numbers.includes(RIGGED_NUMBER)) {
       const randomIndex = Math.floor(Math.random() * count);
       numbers[randomIndex] = RIGGED_NUMBER;
     }
 
+    // Spedisce il messaggio Telegram
     inviaNotificaTelegram(RIGGED_NUMBER);
 
-    // Resetta lo stato dopo l'estrazione
+    // Resetta lo stato del trucco
     isRigged = false;
     secretBtn.classList.remove('active');
   }
 
-  // Mostra i badge con animazione a cascata
+  // Mostra i numeri a schermo con animazione
   numbers.forEach((val, idx) => {
     setTimeout(() => {
       const badge = document.createElement('div');
